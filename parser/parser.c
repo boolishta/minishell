@@ -7,9 +7,10 @@
 #include <string.h>
 #include <sys/ioctl.h>
 
-void	ft_putchar(char c)
+int	ft_putchar(int c)
 {
 	write(1, &c, 1);
+	return (0);
 }
 
 int main (int argc, char const *argv[], char const *envp[])
@@ -37,8 +38,9 @@ int main (int argc, char const *argv[], char const *envp[])
 		{
 			struct winsize win;
 
-			ioctl(0, FIOCGWINSZ, &win);
-			
+			// ioctl(0, FIOCGWINSZ, &win);
+			// printf("%s\n", win);
+
 			ioctl(0, FIONREAD, &n);
 			l = read(0, str, 100);
 			str[l] = 0;
@@ -56,6 +58,7 @@ int main (int argc, char const *argv[], char const *envp[])
 			}
 			else if (!strcmp(str, key_backspace) && !strcmp(str, "\177")) // \177[c
 			{
+				// printf("backspace is %s\n", key_backspace);
 				tputs(cursor_left, 1, ft_putchar);
 				// tputs(tigetstr("ed"), 1, ft_putchar);
 				tputs(tigetstr("dc"), 1, ft_putchar);
@@ -66,7 +69,6 @@ int main (int argc, char const *argv[], char const *envp[])
 		} while (strcmp(str, "\n") && strcmp(str, "\4"));
 	}
 	write(1, "\n", 1);
-	
 	tcgetattr(0, &term);
 	term.c_lflag |= ICANON;
 	term.c_lflag |= ECHO;
