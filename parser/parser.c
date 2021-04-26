@@ -58,10 +58,9 @@ int main (int argc, char const *argv[], char const *envp[])
 			}
 			else if (!strcmp(str, key_backspace) && !strcmp(str, "\177")) // \177[c
 			{
-				// printf("backspace is %s\n", key_backspace);
+				// printf("backspace is %i\n", key_backspace[2]);
 				tputs(cursor_left, 1, ft_putchar);
-				// tputs(tigetstr("ed"), 1, ft_putchar);
-				tputs(tigetstr("dc"), 1, ft_putchar);
+				tputs(tigetstr("ed"), 1, ft_putchar);
 			}
 			else
 				write(1, str, l);
