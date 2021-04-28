@@ -7,15 +7,40 @@
 #include <string.h>
 #include <sys/ioctl.h>
 
+
+char buf[100];
+char *buffer;
+
+
 int	ft_putchar(int c)
 {
 	write(1, &c, 1);
 	return (0);
 }
 
+void ft_get_line(void)
+{
+	int col;
+	int li;
+
+	col = tgetnum("co");
+	li = tgetnum("li");
+	printf("col is %d, line is %d\n", col, li);
+}
+
+void ft_clean_screen(void)
+{
+	buffer = buf;
+
+	tputs(tgetstr("cl", &buffer), 1, ft_putchar);
+	buffer = buf;
+	bzero(buffer, 100);
+}
+
 int main (int argc, char const *argv[], char const *envp[])
 {
 	char str[2000];
+
 	int l;
 	struct termios term;
 	char *term_name;
@@ -30,7 +55,8 @@ int main (int argc, char const *argv[], char const *envp[])
 
 	tgetent(0, term_name); //TODO: проверить на взращаемое значение
 
-	char *str2 = tgetstr("kr", 0);
+	// char *str2 = tgetstr("kr", 0);
+	ft_get_line();
 	while (strcmp(str, "\4"))
 	{
 		tputs(save_cursor, l, ft_putchar);
@@ -49,6 +75,8 @@ int main (int argc, char const *argv[], char const *envp[])
 				tputs(restore_cursor, 1, ft_putchar);
 				tputs(tigetstr("ed"), 1, ft_putchar);
 				write(1, "previous", 8);
+				ft_clean_screen();
+
 			}
 			else if (!strcmp(str, "\e[B"))
 			{
@@ -68,6 +96,7 @@ int main (int argc, char const *argv[], char const *envp[])
 		} while (strcmp(str, "\n") && strcmp(str, "\4"));
 	}
 	write(1, "\n", 1);
+
 	tcgetattr(0, &term);
 	term.c_lflag |= ICANON;
 	term.c_lflag |= ECHO;
